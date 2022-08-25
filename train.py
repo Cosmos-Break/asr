@@ -34,8 +34,7 @@ train_data = train_data[index:]
 print('eval_data_len:', len(eval_data))
 print('train_data_len:', len(train_data))
 
-# fp16=True,
-batch_size = 16
+batch_size = 1
 training_args = TrainingArguments(
     group_by_length=True,
     num_train_epochs=200,
@@ -44,6 +43,7 @@ training_args = TrainingArguments(
     gradient_checkpointing=True,
     weight_decay=0.005,
     save_total_limit=2,
+    fp16=True,
     per_device_train_batch_size=batch_size,
     per_device_eval_batch_size=batch_size,
     gradient_accumulation_steps=2,
