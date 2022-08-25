@@ -32,18 +32,18 @@ print('eval_data_len:', len(eval_data))
 print('train_data_len:', len(train_data))
 
 # fp16=True,
-
+batch_size = 16
 training_args = TrainingArguments(
     group_by_length=True,
     num_train_epochs=3,
     learning_rate=3e-4,
-    max_steps=1000,
+    max_steps=100000,
     eval_steps=200,
     gradient_checkpointing=True,
     weight_decay=0.005,
     save_total_limit=2,
-    per_device_train_batch_size=2,
-    per_device_eval_batch_size=2,
+    per_device_train_batch_size=batch_size,
+    per_device_eval_batch_size=batch_size,
     gradient_accumulation_steps=2,
     early_stopping_patience=5,
 )
