@@ -1,6 +1,9 @@
 from huggingsound import TrainingArguments, ModelArguments, SpeechRecognitionModel, TokenSet
 import os, random
-model = SpeechRecognitionModel("jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn")
+import torch
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = SpeechRecognitionModel(model_path="jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn", device=device)
 output_dir = "output"
 
 # first of all, you need to define your model's token set
@@ -37,8 +40,7 @@ training_args = TrainingArguments(
     group_by_length=True,
     num_train_epochs=200,
     learning_rate=1e-4,
-    eval_steps=100,
-    warmup_steps=10,
+    eval_steps=10,
     gradient_checkpointing=True,
     weight_decay=0.005,
     save_total_limit=2,
@@ -46,6 +48,7 @@ training_args = TrainingArguments(
     per_device_eval_batch_size=batch_size,
     gradient_accumulation_steps=2,
     early_stopping_patience=5,
+    metric_for_best_model='cer'
 )
 model_args = ModelArguments(
     activation_dropout=0.1,
