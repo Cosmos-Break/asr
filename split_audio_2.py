@@ -1,4 +1,5 @@
 import shutil
+from pydub import AudioSegment
 cnt = 0
 
 def split(PROMPT, TRANSCRIPTION, wav_file):
@@ -7,6 +8,9 @@ def split(PROMPT, TRANSCRIPTION, wav_file):
     output_dir = 'Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence'
     open(f'{output_dir}/Split_TXT/{cnt}.txt', 'w', encoding='utf-8').write(TRANSCRIPTION)
     open(f'{output_dir}/Split_PROMPT/{cnt}.txt', 'w', encoding='utf-8').write(PROMPT)
+    wav = AudioSegment.from_wav(wav_file) # 打开wav文件
+    if wav.duration_seconds < 2:
+        print(123)
     shutil.copyfile(wav_file, f'{output_dir}/Split_WAV/{cnt}.wav')
     
 if __name__ == '__main__':
