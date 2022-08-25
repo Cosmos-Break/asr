@@ -45,6 +45,7 @@ training_args = TrainingArguments(
     per_device_train_batch_size=2,
     per_device_eval_batch_size=2,
     gradient_accumulation_steps=2,
+    early_stopping_patience=5,
 )
 model_args = ModelArguments(
     activation_dropout=0.1,
