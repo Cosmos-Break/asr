@@ -20,11 +20,14 @@ def split(txt_file, wav_file):
         # print(rtime - ltime)
         if rtime - ltime < 1000:
             bad_cnt += 1
-            print(bad_cnt)
             continue
         speaker = line[1]
         gender = line[2]
         transcription = line[3]
+        if '[' in transcription:
+            continue
+        if len(transcription) < 5:
+            print(transcription)
         cnt += 1
         wav[ltime:rtime].export(f'{output_dir}/Split_WAV/{cnt}.wav', format="wav")
         open(f'{output_dir}/Split_TXT/{cnt}.txt', 'w', encoding='utf-8').write(transcription)

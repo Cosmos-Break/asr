@@ -3,6 +3,9 @@ from pydub import AudioSegment
 cnt = 0
 
 def split(PROMPT, TRANSCRIPTION, wav_file):
+    if len(TRANSCRIPTION) < 5:
+        print(TRANSCRIPTION)
+    
     global cnt
     cnt += 1
     output_dir = 'Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence'
