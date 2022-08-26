@@ -249,6 +249,7 @@ class TrainingArguments:
     max_steps: int = field(default=0)
     report_to: list[str] = field(default_factory=lambda: ["none"])
     save_total_limit: int = field(default=None)
+    save_steps: int = field(default=None)
     metric_for_best_model: str = field(default=None)
     _n_gpu: int = field(default=1)
     seed: int = field(default=42)

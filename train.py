@@ -36,11 +36,13 @@ print('eval_data_len:', len(eval_data))
 print('train_data_len:', len(train_data))
 
 batch_size = 1
+eval_steps = 100
 training_args = TrainingArguments(
+    save_steps=eval_steps,
     group_by_length=True,
     num_train_epochs=200,
     learning_rate=1e-4,
-    eval_steps=10,
+    eval_steps=eval_steps,
     gradient_checkpointing=True,
     weight_decay=0.005,
     save_total_limit=2,
