@@ -1,10 +1,11 @@
 from huggingsound import TrainingArguments, ModelArguments, SpeechRecognitionModel, TokenSet
-import os, random
+import os, random, time
 import torch
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = SpeechRecognitionModel(model_path="jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn", device=device)
-output_dir = "output"
+now = time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+output_dir = f'./checkpoint-{now}'
 
 # first of all, you need to define your model's token set
 # however, the token set is only needed for non-finetuned models
