@@ -28,7 +28,7 @@ def read_data(dataset_name):
 read_data('Shanghai_Dialect_Conversational_Speech_Corpus')
 read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence')
 random.shuffle(train_data)
-eval_ratio = 0.1
+eval_ratio = 0.05
 index = int(len(train_data) * eval_ratio)
 eval_data = train_data[:index]
 train_data = train_data[index:]
