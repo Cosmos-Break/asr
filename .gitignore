@@ -10,3 +10,6 @@ Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence/UTTRANSINFO.txt
 asr.zip
 packages
 wav2vec2-large-*
+
+*/*/__pycache__
+*/__pycache__

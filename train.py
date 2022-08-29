@@ -4,7 +4,7 @@ import torch
 import numpy as np
 import sys
 
-model_path = sys.argv[1]
+# model_path = sys.argv[1]
 
 def setup_seed(seed):
      torch.manual_seed(seed)
@@ -16,7 +16,7 @@ def setup_seed(seed):
 # 设置随机数种子
 setup_seed(42)
 
-# model_path = "wav2vec2-large-chinese-zh-cn"
+model_path = "wav2vec2-large-chinese-zh-cn"
 # model_path = "wav2vec2-large-xlsr-53-chinese-zh-cn"
 # model_path = "wav2vec2-large-xlsr-53-chinese-zh-cn-gpt"
 # model_path = "wav2vec2-large-xlsr-53-chinese-zn-cn-aishell1"
@@ -48,8 +48,11 @@ read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence')
 random.shuffle(train_data)
 eval_ratio = 0.05
 index = int(len(train_data) * eval_ratio)
-eval_data = train_data[:index]
-train_data = train_data[index:]
+# eval_data = train_data[:index]
+# train_data = train_data[index:]
+
+eval_data = train_data[:10]
+train_data = train_data[10:20]
 print('eval_data_len:', len(eval_data))
 print('train_data_len:', len(train_data))
 
@@ -57,7 +60,7 @@ batch_size = 64
 eval_steps = 100
 # gradient_checkpointing=True,
 # gradient_accumulation_steps=2,
-
+# fp16=True,
 training_args = TrainingArguments(
     save_steps=eval_steps,
     group_by_length=True,
@@ -66,7 +69,6 @@ training_args = TrainingArguments(
     eval_steps=eval_steps,
     weight_decay=0.005,
     save_total_limit=2,
-    fp16=True,
     per_device_train_batch_size=batch_size,
     per_device_eval_batch_size=batch_size,
     early_stopping_patience=5,

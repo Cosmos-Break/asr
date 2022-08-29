@@ -8,7 +8,8 @@ from typing import Optional, Callable
 from datasets import load_from_disk, Dataset
 from tqdm import tqdm
 from transformers import (
-    Wav2Vec2Processor, 
+    Wav2Vec2Processor,
+    Wav2Vec2ForCTC,
     AutoModelForCTC
 )
 from huggingsound.utils import get_chunks, get_waveforms, get_dataset_from_dict_list
@@ -59,24 +60,27 @@ class SpeechRecognitionModel():
         return self.processor is not None
 
     def _load_model(self):
-
+        
         self.model = AutoModelForCTC.from_pretrained(self.model_path)
         self.model.to(self.device)
+        
+        self.processor = Wav2Vec2Processor.from_pretrained(self.model_path)
+        self.token_set = TokenSet.from_processor(self.processor, letter_case=self.letter_case)
 
-        try:
-            self.processor = Wav2Vec2Processor.from_pretrained(self.model_path)
-            self.token_set = TokenSet.from_processor(self.processor, letter_case=self.letter_case)
+        # try:
+        #     self.processor = Wav2Vec2Processor.from_pretrained(self.model_path)
+        #     self.token_set = TokenSet.from_processor(self.processor, letter_case=self.letter_case)
 
-            # changing the processor's tokens maps to match the token set
-            # this is necessary to prevent letter case issues on fine-tuning
-            self.processor.tokenizer.encoder = self.token_set.id_by_token
-            self.processor.tokenizer.decoder = self.token_set.token_by_id
+        #     # changing the processor's tokens maps to match the token set
+        #     # this is necessary to prevent letter case issues on fine-tuning
+        #     self.processor.tokenizer.encoder = self.token_set.id_by_token
+        #     self.processor.tokenizer.decoder = self.token_set.token_by_id
 
-        except Exception:
-            logger.warning("Not fine-tuned model! You'll need to fine-tune it before use this model for audio transcription")
-            self.processor = None
-            self.token_set = None
-
+        # except Exception:
+        #     logger.warning("Not fine-tuned model! You'll need to fine-tune it before use this model for audio transcription")
+        #     self.processor = None
+        #     self.token_set = None
+            
     def transcribe(self, paths: list[str], batch_size: Optional[int] = 1, decoder: Optional[Decoder] = None) -> list[dict]:
         """ 
         Transcribe audio files.
