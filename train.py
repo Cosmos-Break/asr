@@ -1,6 +1,17 @@
 from huggingsound import TrainingArguments, ModelArguments, SpeechRecognitionModel, TokenSet
 import os, random, time
 import torch
+import numpy as np
+
+def setup_seed(seed):
+     torch.manual_seed(seed)
+     torch.cuda.manual_seed_all(seed)
+     np.random.seed(seed)
+     random.seed(seed)
+     torch.backends.cudnn.deterministic = True
+     
+# 设置随机数种子
+setup_seed(42)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = SpeechRecognitionModel(model_path="jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn", device=device)
