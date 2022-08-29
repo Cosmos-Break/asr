@@ -13,10 +13,11 @@ def setup_seed(seed):
 # 设置随机数种子
 setup_seed(42)
 
+model_path = "wav2vec2-large-chinese-zh-cn"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = SpeechRecognitionModel(model_path="jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn", device=device)
+model = SpeechRecognitionModel(model_path=model_path, device=device)
 now = time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
-output_dir = f'./checkpoint-{now}'
+output_dir = f'./checkpoint-{model_path}-{now}'
 
 # first of all, you need to define your model's token set
 # however, the token set is only needed for non-finetuned models
@@ -46,21 +47,22 @@ train_data = train_data[index:]
 print('eval_data_len:', len(eval_data))
 print('train_data_len:', len(train_data))
 
-batch_size = 1
+batch_size = 64
 eval_steps = 100
+# gradient_checkpointing=True,
+# gradient_accumulation_steps=2,
+
 training_args = TrainingArguments(
     save_steps=eval_steps,
     group_by_length=True,
     num_train_epochs=200,
     learning_rate=1e-4,
     eval_steps=eval_steps,
-    gradient_checkpointing=True,
     weight_decay=0.005,
     save_total_limit=2,
     fp16=True,
     per_device_train_batch_size=batch_size,
     per_device_eval_batch_size=batch_size,
-    gradient_accumulation_steps=2,
     early_stopping_patience=5,
     metric_for_best_model='cer'
 )
