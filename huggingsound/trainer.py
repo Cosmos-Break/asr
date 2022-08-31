@@ -463,7 +463,7 @@ class CTCTrainer(Trainer):
         return loss.detach()
 
 
-def finetune_ctc(model_name_or_path: str, output_dir: str, processor: Wav2Vec2Processor, train_dataset: Dataset, 
+def finetune_ctc(model, model_name_or_path: str, output_dir: str, processor: Wav2Vec2Processor, train_dataset: Dataset, 
                  eval_dataset: Optional[Dataset] = None, device: Optional[str] = "cpu", 
                  training_args: Optional[TrainingArguments] = None, model_args: Optional[ModelArguments] = None):
     """
@@ -561,9 +561,29 @@ def finetune_ctc(model_name_or_path: str, output_dir: str, processor: Wav2Vec2Pr
 
     # Setup model
 
-    config = AutoConfig.from_pretrained(model_name_or_path)
+    # config = AutoConfig.from_pretrained(model_name_or_path)
 
-    config.update(
+    # config.update(
+    #     {
+    #         "feat_proj_dropout": model_args.feat_proj_dropout,
+    #         "attention_dropout": model_args.attention_dropout,
+    #         "hidden_dropout": model_args.hidden_dropout,
+    #         "final_dropout": model_args.final_dropout,
+    #         "mask_time_prob": model_args.mask_time_prob,
+    #         "mask_time_length": model_args.mask_time_length,
+    #         "mask_feature_prob": model_args.mask_feature_prob,
+    #         "mask_feature_length": model_args.mask_feature_length,
+    #         "layerdrop": model_args.layerdrop,
+    #         "activation_dropout": model_args.activation_dropout,
+    #         "ctc_loss_reduction": model_args.ctc_loss_reduction,
+    #         "pad_token_id": processor.tokenizer.pad_token_id,
+    #         "vocab_size": len(processor.tokenizer),
+    #     }
+    # )
+
+    # model = AutoModelForCTC.from_pretrained(model_name_or_path, config=config, ignore_mismatched_sizes=True)
+    
+    model.config.update(
         {
             "feat_proj_dropout": model_args.feat_proj_dropout,
             "attention_dropout": model_args.attention_dropout,
@@ -580,11 +600,6 @@ def finetune_ctc(model_name_or_path: str, output_dir: str, processor: Wav2Vec2Pr
             "vocab_size": len(processor.tokenizer),
         }
     )
-
-    if training_args.ignore_pretrained_weights:
-        model = AutoModelForCTC.from_config(config=config, ignore_mismatched_sizes=True)
-    else:
-        model = AutoModelForCTC.from_pretrained(model_name_or_path, config=config, ignore_mismatched_sizes=True)
     
     if hftraining_args.gradient_checkpointing:
         model.gradient_checkpointing_enable()

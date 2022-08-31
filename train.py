@@ -56,7 +56,7 @@ train_data = train_data[index:]
 print('eval_data_len:', len(eval_data))
 print('train_data_len:', len(train_data))
 
-batch_size = 64
+batch_size = 32
 eval_steps = 100
 # gradient_checkpointing=True,
 # gradient_accumulation_steps=2,

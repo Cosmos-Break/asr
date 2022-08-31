@@ -77,25 +77,25 @@ class SpeechRecognitionModel():
             self.processor.tokenizer.encoder = self.token_set.id_by_token
             self.processor.tokenizer.decoder = self.token_set.token_by_id
             
-            # total_row = len(self.processor.tokenizer)
-            # weight = self.model.lm_head.weight.detach().numpy()
-            # bias = self.model.lm_head.bias.detach().numpy()
-            # row, col = weight.shape[0], weight.shape[1]
+            total_row = len(self.processor.tokenizer)
+            weight = self.model.lm_head.weight.detach().numpy()
+            bias = self.model.lm_head.bias.detach().numpy()
+            row, col = weight.shape[0], weight.shape[1]
             
-            # added_weight = np.concatenate((weight, np.zeros((total_row - row, col))), 0)
-            # added_weight_tensor = torch.tensor(added_weight, device=self.device, requires_grad=True)
-            # added_weight_param = torch.nn.parameter.Parameter(added_weight_tensor)
+            added_weight = np.concatenate((weight, np.zeros((total_row - row, col))), 0)
+            added_weight_tensor = torch.tensor(added_weight, device=self.device, requires_grad=True)
+            added_weight_param = torch.nn.parameter.Parameter(added_weight_tensor)
             
-            # added_bias = np.concatenate((bias, np.zeros((total_row - row))), 0)
-            # added_bias_tensor = torch.tensor(added_bias, device=self.device, requires_grad=True)
-            # added_bias_param = torch.nn.parameter.Parameter(added_bias_tensor)
+            added_bias = np.concatenate((bias, np.zeros((total_row - row))), 0)
+            added_bias_tensor = torch.tensor(added_bias, device=self.device, requires_grad=True)
+            added_bias_param = torch.nn.parameter.Parameter(added_bias_tensor)
             
-            # with torch.no_grad():
-            #     self.model.lm_head.out_features = total_row
-            #     self.model.lm_head.weight = added_weight_param
-            #     self.model.lm_head.weight.requires_grad = True
-            #     self.model.lm_head.bias = added_bias_param
-            #     self.model.lm_head.bias.requires_grad = True
+            with torch.no_grad():
+                self.model.lm_head.out_features = total_row
+                self.model.lm_head.weight = added_weight_param
+                self.model.lm_head.weight.requires_grad = True
+                self.model.lm_head.bias = added_bias_param
+                self.model.lm_head.bias.requires_grad = True
 
         except Exception:
             logger.warning("Not fine-tuned model! You'll need to fine-tune it before use this model for audio transcription")
@@ -384,7 +384,7 @@ class SpeechRecognitionModel():
         
         logger.info("Starting fine-tuning process...")
         
-        finetune_ctc(self.model_path, output_dir, processor, train_dataset, eval_dataset, self.device, training_args, model_args)
+        finetune_ctc(self.model, self.model_path, output_dir, processor, train_dataset, eval_dataset, self.device, training_args, model_args)
 
         logger.info("Loading fine-tuned model...")
 
