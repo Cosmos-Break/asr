@@ -65,42 +65,35 @@ class SpeechRecognitionModel():
         self.model = AutoModelForCTC.from_pretrained(self.model_path)
         self.model.to(self.device)
         
-        # self.processor = Wav2Vec2Processor.from_pretrained(self.model_path)
-        # self.token_set = TokenSet.from_processor(self.processor, letter_case=self.letter_case)
         
-        try:
-            self.processor = Wav2Vec2Processor.from_pretrained(self.model_path)
-            self.token_set = TokenSet.from_processor(self.processor, letter_case=self.letter_case)
+        self.processor = Wav2Vec2Processor.from_pretrained(self.model_path)
+        self.token_set = TokenSet.from_processor(self.processor, letter_case=self.letter_case)
 
-            # changing the processor's tokens maps to match the token set
-            # this is necessary to prevent letter case issues on fine-tuning
-            self.processor.tokenizer.encoder = self.token_set.id_by_token
-            self.processor.tokenizer.decoder = self.token_set.token_by_id
-            
-            total_row = len(self.processor.tokenizer)
-            weight = self.model.lm_head.weight.detach().numpy()
-            bias = self.model.lm_head.bias.detach().numpy()
-            row, col = weight.shape[0], weight.shape[1]
-            
-            added_weight = np.concatenate((weight, np.zeros((total_row - row, col))), 0)
-            added_weight_tensor = torch.tensor(added_weight, device=self.device, requires_grad=True, dtype=torch.float32)
-            added_weight_param = torch.nn.parameter.Parameter(added_weight_tensor)
-            
-            added_bias = np.concatenate((bias, np.zeros((total_row - row))), 0)
-            added_bias_tensor = torch.tensor(added_bias, device=self.device, requires_grad=True, dtype=torch.float32)
-            added_bias_param = torch.nn.parameter.Parameter(added_bias_tensor)
-            
-            with torch.no_grad():
-                self.model.lm_head.out_features = total_row
-                self.model.lm_head.weight = added_weight_param
-                self.model.lm_head.weight.requires_grad = True
-                self.model.lm_head.bias = added_bias_param
-                self.model.lm_head.bias.requires_grad = True
+        # changing the processor's tokens maps to match the token set
+        # this is necessary to prevent letter case issues on fine-tuning
+        self.processor.tokenizer.encoder = self.token_set.id_by_token
+        self.processor.tokenizer.decoder = self.token_set.token_by_id
+        
+        total_row = len(self.processor.tokenizer)
+        weight = self.model.lm_head.weight.cpu().detach().numpy()
+        bias = self.model.lm_head.bias.cpu().detach().numpy()
+        row, col = weight.shape[0], weight.shape[1]
+        
+        added_weight = np.concatenate((weight, np.zeros((total_row - row, col))), 0)
+        added_weight_tensor = torch.tensor(added_weight, device=self.device, requires_grad=True, dtype=torch.float32)
+        added_weight_param = torch.nn.parameter.Parameter(added_weight_tensor)
+        
+        added_bias = np.concatenate((bias, np.zeros((total_row - row))), 0)
+        added_bias_tensor = torch.tensor(added_bias, device=self.device, requires_grad=True, dtype=torch.float32)
+        added_bias_param = torch.nn.parameter.Parameter(added_bias_tensor)
+        
+        with torch.no_grad():
+            self.model.lm_head.out_features = total_row
+            self.model.lm_head.weight = added_weight_param
+            self.model.lm_head.weight.requires_grad = True
+            self.model.lm_head.bias = added_bias_param
+            self.model.lm_head.bias.requires_grad = True
 
-        except Exception:
-            logger.warning("Not fine-tuned model! You'll need to fine-tune it before use this model for audio transcription")
-            self.processor = None
-            self.token_set = None
             
     def transcribe(self, paths: list[str], batch_size: Optional[int] = 1, decoder: Optional[Decoder] = None) -> list[dict]:
         """ 
