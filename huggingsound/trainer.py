@@ -582,10 +582,10 @@ def finetune_ctc(model_name_or_path: str, output_dir: str, processor: Wav2Vec2Pr
     )
 
     if training_args.ignore_pretrained_weights:
-        model = AutoModelForCTC.from_config(config=config)
+        model = AutoModelForCTC.from_config(config=config, ignore_mismatched_sizes=True)
     else:
-        model = AutoModelForCTC.from_pretrained(model_name_or_path, config=config)
-
+        model = AutoModelForCTC.from_pretrained(model_name_or_path, config=config, ignore_mismatched_sizes=True)
+    
     if hftraining_args.gradient_checkpointing:
         model.gradient_checkpointing_enable()
 
@@ -657,8 +657,6 @@ def finetune_ctc(model_name_or_path: str, output_dir: str, processor: Wav2Vec2Pr
 
     if last_checkpoint is not None:
         checkpoint = last_checkpoint
-    elif os.path.isdir(model_name_or_path):
-        checkpoint = model_name_or_path
     else:
         checkpoint = None
 
@@ -667,7 +665,7 @@ def finetune_ctc(model_name_or_path: str, output_dir: str, processor: Wav2Vec2Pr
     if is_main_process(hftraining_args.local_rank):
         processor.save_pretrained(hftraining_args.output_dir)
     
-    train_result = trainer.train(resume_from_checkpoint=checkpoint)
+    train_result = trainer.train(resume_from_checkpoint=None)
     trainer.save_model()
 
     metrics = train_result.metrics  

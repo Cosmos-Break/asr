@@ -16,9 +16,9 @@ def setup_seed(seed):
 # 设置随机数种子
 setup_seed(42)
 
-model_path = "wav2vec2-large-chinese-zh-cn"
+# model_path = "wav2vec2-large-chinese-zh-cn"
 # model_path = "wav2vec2-large-xlsr-53-chinese-zh-cn"
-# model_path = "wav2vec2-large-xlsr-53-chinese-zh-cn-gpt"
+model_path = "wav2vec2-large-xlsr-53-chinese-zh-cn-gpt"
 # model_path = "wav2vec2-large-xlsr-53-chinese-zn-cn-aishell1"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = SpeechRecognitionModel(model_path=model_path, device=device)
