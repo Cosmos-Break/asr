@@ -665,7 +665,7 @@ def finetune_ctc(model_name_or_path: str, output_dir: str, processor: Wav2Vec2Pr
     if is_main_process(hftraining_args.local_rank):
         processor.save_pretrained(hftraining_args.output_dir)
     
-    train_result = trainer.train(resume_from_checkpoint=None)
+    train_result = trainer.train(resume_from_checkpoint=checkpoint)
     trainer.save_model()
 
     metrics = train_result.metrics  
