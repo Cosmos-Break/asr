@@ -83,11 +83,11 @@ class SpeechRecognitionModel():
             row, col = weight.shape[0], weight.shape[1]
             
             added_weight = np.concatenate((weight, np.zeros((total_row - row, col))), 0)
-            added_weight_tensor = torch.tensor(added_weight, device=self.device, requires_grad=True)
+            added_weight_tensor = torch.tensor(added_weight, device=self.device, requires_grad=True, dtype=torch.float32)
             added_weight_param = torch.nn.parameter.Parameter(added_weight_tensor)
             
             added_bias = np.concatenate((bias, np.zeros((total_row - row))), 0)
-            added_bias_tensor = torch.tensor(added_bias, device=self.device, requires_grad=True)
+            added_bias_tensor = torch.tensor(added_bias, device=self.device, requires_grad=True, dtype=torch.float32)
             added_bias_param = torch.nn.parameter.Parameter(added_bias_tensor)
             
             with torch.no_grad():

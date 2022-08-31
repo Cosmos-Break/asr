@@ -51,8 +51,11 @@ index = int(len(train_data) * eval_ratio)
 eval_data = train_data[:index]
 train_data = train_data[index:]
 
-# eval_data = train_data[:10]
-# train_data = train_data[10:20]
+# for debug
+eval_data = train_data[:10]
+train_data = train_data[10:20]
+
+
 print('eval_data_len:', len(eval_data))
 print('train_data_len:', len(train_data))
 
