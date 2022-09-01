@@ -379,7 +379,7 @@ class SpeechRecognitionModel():
         
         finetune_ctc(self.model, self.model_path, output_dir, processor, train_dataset, eval_dataset, self.device, training_args, model_args)
 
-        logger.info("Loading fine-tuned model...")
+        # logger.info("Loading fine-tuned model...")
 
-        self.model_path = output_dir
-        self._load_model()
+        # self.model_path = output_dir
+        # self._load_model()
