@@ -17,8 +17,8 @@ def setup_seed(seed):
 setup_seed(42)
 
 # model_path = "wav2vec2-large-chinese-zh-cn"
-# model_path = "wav2vec2-large-xlsr-53-chinese-zh-cn"
-model_path = "wav2vec2-large-xlsr-53-chinese-zh-cn-gpt"
+model_path = "wav2vec2-large-xlsr-53-chinese-zh-cn"
+# model_path = "wav2vec2-large-xlsr-53-chinese-zh-cn-gpt"
 # model_path = "wav2vec2-large-xlsr-53-chinese-zn-cn-aishell1"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = SpeechRecognitionModel(model_path=model_path, device=device)
@@ -43,8 +43,11 @@ def read_data(dataset_name):
         train_data.append(
             {"path": path, "transcription":transcription}
         )
-read_data('Shanghai_Dialect_Conversational_Speech_Corpus')
-read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence')
+        res = model.processor.tokenizer(transcription)['input_ids']
+        if all(x == 3 for x in res):
+            continue
+# read_data('Shanghai_Dialect_Conversational_Speech_Corpus')
+# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence')
 read_data('Shanghai_Dialect_Dict')
 random.shuffle(train_data)
 eval_ratio = 0.05
@@ -53,14 +56,14 @@ eval_data = train_data[:index]
 train_data = train_data[index:]
 
 # for debug
-# eval_data = train_data[:10]
-# train_data = train_data[10:20]
+eval_data = train_data[:10]
+train_data = train_data[10:20]
 
 
 print('eval_data_len:', len(eval_data))
 print('train_data_len:', len(train_data))
 
-batch_size = 32
+batch_size = 1
 eval_steps = 100
 # gradient_checkpointing=True,
 # gradient_accumulation_steps=2,

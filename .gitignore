@@ -11,6 +11,7 @@ asr.zip
 packages
 wav2vec2-large-*
 opus-mt-en-zh
+checkpoint-*
 
 */*/__pycache__
 */__pycache__

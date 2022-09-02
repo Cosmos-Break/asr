@@ -1,14 +1,15 @@
+import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from app.nlp import NLP
+from app.asr import ASR
 
 class Message(BaseModel):
     input: str
     output: str = None
 
 app = FastAPI()
-nlp = NLP()
+asr = ASR()
 
 origins = [
     "http://localhost",
@@ -24,12 +25,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/generative/")
-async def  generate(message: Message):
-    message.output  = nlp.generate(prompt=message.input)
+@app.post("/transcribe/")
+async def  transcribe(message: Message):
+    transcribe_json_data  = asr.transcribe(wav="Shanghai_Dialect_Dict/Split_WAV/1.wav")
+    transcription = transcribe_json_data['transcription']
+    translation = asr.translation(text=transcription)
+    transcribe_json_data['possible_translation'] = translation
+    # message.output = json.dumps(transcribe_json_data)
+    message.output = transcribe_json_data
     return {"output" : message.output}
 
-@app.post("/sentiment/")
-async def sentiment_analysis(message: Message):
-    message.output  = str(nlp.sentiments(message.input))
-    return {"output" : message.output}
+# @app.post("/sentiment/")
+# async def sentiment_analysis(message: Message):
+#     message.output  = str(asr.sentiments(message.input))
+#     return {"output" : message.output}
