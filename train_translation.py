@@ -18,6 +18,8 @@ def read_data(dataset_name):
         zh = open(f'{dataset_name}/Split_PROMPT/{cnt}.txt', encoding='utf-8').readline().strip()
         sh_list.append(sh)
         zh_list.append(zh)
+        sh_list.append(zh)
+        zh_list.append(zh)
 
 read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence')
 read_data('Shanghai_Dialect_Dict')
@@ -50,7 +52,7 @@ tokenized_data = data.map(preprocess_function, batched=True)
 
 data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model)
 
-batch_size = 16
+batch_size = 32
 # fp16=True
 training_args = Seq2SeqTrainingArguments(
     output_dir=output_dir,
@@ -76,3 +78,28 @@ trainer = Seq2SeqTrainer(
 )
 
 trainer.train()
+
+def generate_translation(model, tokenizer, example):
+    """print out the source, target and predicted raw text."""
+    source = example['sh']
+    target = example['zh']
+    input_ids = example['input_ids']
+    input_ids = torch.LongTensor(input_ids).view(1, -1).to(model.device)
+    print('input_ids: ', input_ids)
+    generated_ids = model.generate(input_ids)
+    print('generated_ids: ', generated_ids)
+    prediction = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
+    
+    print('source: ', source)
+    print('target: ', target)
+    print('prediction: ', prediction)
+
+text = '侬讲呃今朝要来呃！'
+text = '侬讲呃今朝要来呃！'
+with tokenizer.as_target_tokenizer():
+    model_inputs = tokenizer(text, max_length=64, truncation=True)
+    example = {}
+    example['sh'] = text
+    example['zh'] = text
+    example['input_ids'] = model_inputs['input_ids']
+    generate_translation(model, tokenizer, example)
