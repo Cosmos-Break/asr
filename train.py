@@ -76,6 +76,7 @@ training_args = TrainingArguments(
     eval_steps=eval_steps,
     weight_decay=0.005,
     save_total_limit=2,
+    lr_decay_steps=200,
     per_device_train_batch_size=batch_size,
     per_device_eval_batch_size=batch_size,
     early_stopping_patience=5,
