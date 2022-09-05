@@ -55,19 +55,21 @@ index = int(len(train_data) * eval_ratio)
 eval_data = train_data[:index]
 train_data = train_data[index:]
 
+
 # for debug
 eval_data = train_data[:10]
 train_data = train_data[10:20]
+batch_size = 1
+eval_steps = 100
+fp16 = False
 
 
 print('eval_data_len:', len(eval_data))
 print('train_data_len:', len(train_data))
 
-batch_size = 1
-eval_steps = 100
 # gradient_checkpointing=True,
 # gradient_accumulation_steps=2,
-# fp16=True,
+
 training_args = TrainingArguments(
     save_steps=eval_steps,
     group_by_length=True,
