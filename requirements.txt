@@ -2,3 +2,7 @@ datasets
 transformers
 huggingsound
 pydub
+fastapi
+uvicorn
+sacremoses
+sentencepiece

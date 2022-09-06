@@ -1,4 +1,3 @@
-import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -14,7 +13,7 @@ asr = ASR()
 origins = [
     "http://localhost",
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
 ]
 
 app.add_middleware(
@@ -27,7 +26,9 @@ app.add_middleware(
 
 @app.post("/transcribe/")
 async def  transcribe(message: Message):
-    transcribe_json_data  = asr.transcribe(wav="Shanghai_Dialect_Dict/Split_WAV/1.wav")
+    # wav = "Shanghai_Dialect_Dict/Split_WAV/1.wav"
+    wav = message.input
+    transcribe_json_data  = asr.transcribe(wav=wav)
     transcription = transcribe_json_data['transcription']
     translation = asr.translation(text=transcription)
     transcribe_json_data['possible_translation'] = translation

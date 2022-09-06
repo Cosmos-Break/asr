@@ -8,8 +8,9 @@ class ASR:
         self.model = SpeechRecognitionModel("checkpoint-wav2vec2-large-xlsr-53-chinese-zh-cn-2022-09-02-10_08_26", device=device)
         self.tokenizer = self.model.processor.tokenizer
         
-        self.mt_tokenizer = AutoTokenizer.from_pretrained("opus-mt-en-zh")
-        self.mt_model = AutoModelForSeq2SeqLM.from_pretrained("opus-mt-en-zh").to(device)
+        mt_model_path = 'checkpoint-opus-mt-en-zh-2022-09-05-17_17_17/checkpoint-2500'
+        self.mt_tokenizer = AutoTokenizer.from_pretrained(mt_model_path)
+        self.mt_model = AutoModelForSeq2SeqLM.from_pretrained(mt_model_path).to(device)
         
     def transcribe(self, wav):
         audio_path = [wav]
