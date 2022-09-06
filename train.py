@@ -34,21 +34,24 @@ output_dir = f'./checkpoint-{model_path}-{now}'
 # define your train/eval data
 train_data = []
 
-def read_data(dataset_name):
+def read_data(dataset_name, wav_split):
     data_len = len(os.listdir(f'{dataset_name}/Split_TXT'))
     print(data_len)
     for cnt in range(1, data_len+1):
         transcription = open(f'{dataset_name}/Split_TXT/{cnt}.txt', encoding='utf-8').readline().strip()
-        path = f'{dataset_name}/Split_WAV/{cnt}.wav'
+        path = f'{dataset_name}/Split_WAV{wav_split}/{cnt}.wav'
         train_data.append(
             {"path": path, "transcription":transcription}
         )
         res = model.processor.tokenizer(transcription)['input_ids']
         if all(x == 3 for x in res):
             continue
-# read_data('Shanghai_Dialect_Conversational_Speech_Corpus')
-# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence')
-read_data('Shanghai_Dialect_Dict')
+# read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 1)
+# read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 2)
+# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 1)
+# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 2)
+read_data('Shanghai_Dialect_Dict', 1)
+read_data('Shanghai_Dialect_Dict', 2)
 random.shuffle(train_data)
 eval_ratio = 0.05
 index = int(len(train_data) * eval_ratio)
