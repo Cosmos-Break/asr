@@ -43,9 +43,10 @@ def read_data(dataset_name, wav_split):
         train_data.append(
             {"path": path, "transcription":transcription}
         )
-        res = model.processor.tokenizer(transcription)['input_ids']
         if all(x == 3 for x in res):
             continue
+        res = model.processor.tokenizer(transcription)['input_ids']
+        
 # read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 1)
 # read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 2)
 # read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 1)
