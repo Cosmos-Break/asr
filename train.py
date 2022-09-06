@@ -47,25 +47,35 @@ def read_data(dataset_name, wav_split):
             continue
         res = model.processor.tokenizer(transcription)['input_ids']
         
-# read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 1)
-# read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 2)
-# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 1)
-# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 2)
+
+
+
+# for debug
 read_data('Shanghai_Dialect_Dict', 1)
 read_data('Shanghai_Dialect_Dict', 2)
 random.shuffle(train_data)
 eval_ratio = 0.05
 index = int(len(train_data) * eval_ratio)
-eval_data = train_data[:index]
-train_data = train_data[index:]
-
-
-# for debug
 eval_data = train_data[:10]
 train_data = train_data[10:20]
 batch_size = 1
 eval_steps = 100
 fp16 = False
+
+# for train
+# read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 1)
+# read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 2)
+# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 1)
+# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 2)
+# read_data('Shanghai_Dialect_Dict', 1)
+# read_data('Shanghai_Dialect_Dict', 2)
+# eval_ratio = 0.05
+# index = int(len(train_data) * eval_ratio)
+# eval_data = train_data[:index]
+# train_data = train_data[index:]
+# batch_size = 32
+# eval_steps = 100
+# fp16 = True
 
 
 print('eval_data_len:', len(eval_data))
@@ -80,13 +90,12 @@ training_args = TrainingArguments(
     num_train_epochs=200,
     learning_rate=1e-4,
     eval_steps=eval_steps,
-    weight_decay=0.005,
     save_total_limit=2,
-    lr_decay_steps=200,
     per_device_train_batch_size=batch_size,
     per_device_eval_batch_size=batch_size,
     early_stopping_patience=5,
-    metric_for_best_model='cer'
+    metric_for_best_model='cer',
+    fp16=fp16
 )
 model_args = ModelArguments(
     activation_dropout=0.1,
