@@ -22,6 +22,8 @@ def read_data(dataset_name):
 
 read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence')
 read_data('Shanghai_Dialect_Dict')
+read_data('Shanghai_Dialect_Ximalaya')
+read_data('Shanghai_Dialect_Zhongguoyuyan')
 
 data = {'train':Dataset.from_dict({'sh':sh_list,'zh':zh_list})}
 data = DatasetDict(data)

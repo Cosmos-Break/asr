@@ -69,6 +69,8 @@ fp16 = False
 # read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 2)
 # read_data('Shanghai_Dialect_Dict', 1)
 # read_data('Shanghai_Dialect_Dict', 2)
+# read_data('Shanghai_Dialect_Zhongguoyuyan', 1)
+
 # eval_ratio = 0.05
 # index = int(len(train_data) * eval_ratio)
 # eval_data = train_data[:index]
