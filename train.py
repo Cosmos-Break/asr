@@ -40,14 +40,12 @@ def read_data(dataset_name, wav_split):
     for cnt in range(1, data_len+1):
         transcription = open(f'{dataset_name}/Split_TXT/{cnt}.txt', encoding='utf-8').readline().strip()
         path = f'{dataset_name}/Split_WAV{wav_split}/{cnt}.wav'
+        res = model.processor.tokenizer(transcription)['input_ids']
+        if all(x == 3 for x in res):
+            continue
         train_data.append(
             {"path": path, "transcription":transcription}
         )
-        if all(x == 3 for x in res):
-            continue
-        res = model.processor.tokenizer(transcription)['input_ids']
-        
-
 
 
 # for debug
