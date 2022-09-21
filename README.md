@@ -10,6 +10,7 @@ Huggingface的transformers和huggingsound。
 
 ## 训练脚本
 train.py 用于训练ASR模型
+
 train_translation.py 用于训练MT模型
 
 ## 服务
