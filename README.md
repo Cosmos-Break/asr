@@ -6,7 +6,7 @@ Huggingface的transformers和huggingsound。
 包含一个沪语ASR模型(沪语语音->沪语转写文本)和机器翻译模型(沪语转写文本->普通话文本)。
 
 ## 数据
-包含Magichub开源数据集、喜马拉雅，中国语言网爬取的数据集、讯飞TTS生成的wav数据。
+包含Magichub开源数据集、喜马拉雅，shh.dict.cn，中国语言网爬取的数据集、讯飞TTS生成的wav数据。
 
 ## 训练脚本
 train.py 用于训练ASR模型
