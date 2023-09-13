@@ -4,6 +4,12 @@ import torch
 import numpy as np
 import sys
 
+from dataclasses import dataclass, field
+
+@dataclass
+class CustomTrainingArguments(TrainingArguments):
+    save_steps: int = field(default=100)
+
 # model_path = sys.argv[1]
 
 def setup_seed(seed):
@@ -49,33 +55,33 @@ def read_data(dataset_name, wav_split):
 
 
 # for debug
-read_data('Shanghai_Dialect_Dict', 1)
-read_data('Shanghai_Dialect_Dict', 2)
-random.shuffle(train_data)
-eval_ratio = 0.05
-index = int(len(train_data) * eval_ratio)
-eval_data = train_data[:10]
-train_data = train_data[10:20]
-batch_size = 1
-eval_steps = 100
-fp16 = False
-
-# for train
-# read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 1)
-# read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 2)
-# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 1)
-# read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 2)
 # read_data('Shanghai_Dialect_Dict', 1)
 # read_data('Shanghai_Dialect_Dict', 2)
-# read_data('Shanghai_Dialect_Zhongguoyuyan', 1)
-
+# random.shuffle(train_data)
 # eval_ratio = 0.05
 # index = int(len(train_data) * eval_ratio)
-# eval_data = train_data[:index]
-# train_data = train_data[index:]
-# batch_size = 32
+# eval_data = train_data[:10]
+# train_data = train_data[10:20]
+# batch_size = 1
 # eval_steps = 100
-# fp16 = True
+# fp16 = False
+
+# for train
+read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 1)
+read_data('Shanghai_Dialect_Conversational_Speech_Corpus', 2)
+read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 1)
+read_data('Shanghai_Dialect_Scripted_Speech_Corpus_Daily_Use_Sentence', 2)
+read_data('Shanghai_Dialect_Dict', 1)
+read_data('Shanghai_Dialect_Dict', 2)
+read_data('Shanghai_Dialect_Zhongguoyuyan', 1)
+
+eval_ratio = 0.05
+index = int(len(train_data) * eval_ratio)
+eval_data = train_data[:index]
+train_data = train_data[index:]
+batch_size = 32
+eval_steps = 100
+fp16 = True
 
 
 print('eval_data_len:', len(eval_data))
@@ -84,7 +90,7 @@ print('train_data_len:', len(train_data))
 # gradient_checkpointing=True,
 # gradient_accumulation_steps=2,
 
-training_args = TrainingArguments(
+training_args = CustomTrainingArguments(
     save_steps=eval_steps,
     group_by_length=True,
     num_train_epochs=200,
